@@ -56,4 +56,48 @@ group by productid
 having SUM(quantity)>500
 order by productid asc
 
+---10. From the following table write a query in SQL to find the total quentity for a group of locationid multiplied by 10.
+select SUM(quantity) as 'sum quantity', locationid 
+from production.productinventory
+group by locationid
+
+---11. From the following tables write a query in SQL to find the persons whose last name starts with letter 'L'. Return BusinessEntityID, FirstName, LastName, and PhoneNumber. Sort the result on lastname and firstname.
+
+select A.BusinessEntityID, A.firstname, A.lastname, B.phonenumber
+from Person.Person as A
+JOIN Person.PersonPhone AS B
+on A.BusinessEntityID= B.BusinessEntityID
+where lastname like 'L%'
+order by LASTname, firstname
+
+---12. From the following table write a query in SQL to find the sum of subtotal column. Group the sum on distinct salespersonid and customerid. Rolls up the results into subtotal and running total. Return salespersonid, customerid and sum of subtotal column i.e. sum_subtotal.
+
+select SUM(subtotal) as 'sum subtotal', salespersonid, customerid
+from sales.salesorderheader
+ group by rollup (customerid, salespersonid)
+
+ ---13. From the following table write a query in SQL to find the sum of the quantity of all combination of group of distinct locationid and shelf column. Return locationid, shelf and sum of quantity as TotalQuantity.
+ select locationid, shelf, sum(quantity) as 'Total Quantity'
+from production.productinventory
+ group by cube (locationid, shelf)--- all combinations
+
+  select locationid, shelf, sum(quantity) as 'Total Quantity'
+from production.productinventory
+ group by rollup (locationid, shelf)
+
+ ---14. From the following table write a query in SQL to find the sum of the quantity with subtotal for each locationid. Group the results for all combination of distinct locationid and shelf column. Rolls up the results into subtotal and running total. Return locationid, shelf and sum of quantity as TotalQuantity.
+
+select SUM(quantity) as 'Total Quantity', locationid, shelf
+from production.productinventory
+group by cube (locationid, shelf)
+union all --(union all- return all records, union- returns unique records)
+select SUM(quantity) as 'Total Quantity', locationid, shelf
+from production.productinventory
+group by rollup (locationid, shelf)
+
+
+select SUM(quantity) as 'Total Quantity', locationid, shelf
+from production.productinventory
+group by grouping sets ( rollup (locationid, shelf), cube (locationid, shelf) )
+
 
